@@ -1,2 +1,5 @@
-# stop-n-rest
-A microservices based hotel room booking system
+# Stop-N-Rest
+
+This is Our Capstone Project For the FYNDNA-Training-Program
+
+![img](Microservice-Architecture-Diagram){./diagrams/microservice-architecture-diagram.png}

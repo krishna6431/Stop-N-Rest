@@ -1,0 +1,76 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: hotel-service
+          uri: lb://hotel-service
+          predicates:
+            - Path=/api/v1/hotels/**,/api/v1/rooms/**,/api/v1/roomtypes/**
+          filters:
+            - name: AuthenticationFilter
+              args:
+                excludedEndpoints: ["/api/v1/hotels/hotels-swagger/api-docs","/api/v1/hotels/.*?","/api/v1/rooms/.*?","/api/v1/rooms/hotel/**","/api/v1/hotels/search/"]
+
+
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - name: AuthenticationFilter
+              args:
+                excludedEndpoints: ["/api/v1/users/users-swagger/api-docs","/api/v1/users" ]
+
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/v1/bookings/**
+          filters:
+            - name: AuthenticationFilter
+              args:
+                excludedEndpoints: ["/api/v1/bookings/bookings-swagger/api-docs",]
+
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - name: AuthenticationFilter
+              args:
+                excludedEndpoints: [ "/api/v1/payments/payments-swagger/api-docs", ]
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+      - url: /api/v1/users/users-swagger/api-docs
+        name: User Service
+      - url: /api/v1/hotels/hotels-swagger/api-docs
+        name: Hotel-Service-Endpoints
+      - url: /api/v1/auth/api-docs
+        name: Auth-Service-Endpoints
+      - url: /api/v1/bookings/bookings-swagger/api-docs
+        name: Booking-Service-Endpoints
+      - url: /api/v1/payments/payments-swagger/api-docs
+        name: Payment-Service-Endpoints
+  openapi:
+    servers:
+      - url: http://localhost:8084
+    global-parameters:
+      - name: Authorization
+        in: header
+        description: Bearer token for authorization
+        required: true
+        schema:
+          type: string
